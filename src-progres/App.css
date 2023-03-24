@@ -1,0 +1,50 @@
+* {
+  margin: 0;
+  /* background-color: white; */
+}
+
+.header {
+  font-style: italic;
+  color: wheat;
+  padding-right: 8px;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.card {
+  height: auto;
+  width: auto;
+  background-color: #f0f8ff;
+  border: 1px solid rgb(0, 153, 255);
+  border-radius: 10px;
+  margin: 2rem 20rem 0;
+  padding: 32px;
+}
+
+.space-1 {
+  float: right;
+  padding: 10;
+  width: 650px;
+}
+
+.space-2 {
+  float: right;
+  padding: 10;
+  width: 650px;
+}
+
+.btn {
+  float: right;
+}
+
+.span-1 {
+  color: rgb(0, 153, 255);
+  font-family: "Courier New", Courier, monospace;
+}
+
+.span-2 {
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
+}

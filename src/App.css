@@ -1,47 +1,64 @@
-* {
-  margin: 0;
-  /* background-color: white; */
-}
-
-.header {
-  font-style: italic;
-  color: wheat;
-  padding-right: 8px;
-}
-
-.flex-container {
+.app {
   display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
-.card {
-  height: auto;
-  width: auto;
-  background-color: #f0f8ff;
-  border: 1px solid rgb(0, 153, 255);
-  border-radius: 10px;
-  margin: 2rem 20rem 0;
-  padding: 32px;
+.todo_input {
+  height: 16px;
+  padding: 10px;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border: 2px solid blueviolet;
 }
 
-.space-1 {
-  float: right;
-  width: 93.5%;
+.todo_button {
+  border: 2px solid blueviolet;
+  background-color: transparent;
+  height: 40px;
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
-.space-2 {
-  float: right;
+.todo {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  min-width: 340px;
 }
 
-.btn {
-  float: right;
+.edit {
+  width: 66px;
+  font-weight: 700;
+  background: blueviolet;
+  border: none;
+  border-top-right-radius: 5px;
+  height: 33px;
+  border-bottom-right-radius: 5px;
+  color: white;
+  font-size: medium;
 }
 
-.span-1 {
-  color: rgb(0, 153, 255);
-  font-family: "Courier New", Courier, monospace;
+.delete {
+  width: 66px;
+  font-weight: 700;
+  background: white;
+  border: 2px solid blueviolet;
+  border-top-left-radius: 5px;
+  height: 33px;
+  color: blueviolet;
+  border-bottom-left-radius: 5px;
+  font-size: medium;
 }
 
-.span-2 {
-  font-family: "Courier New", Courier, monospace;
-  font-weight: bold;
+.form {
+  padding-top: 27px;
+  padding-bottom: 27px;
+}
+
+.name {
+  max-width: 190.34px;
+  text-align: left;
 }
