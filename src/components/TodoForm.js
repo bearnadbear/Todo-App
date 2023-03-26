@@ -1,33 +1,36 @@
 import { Button, Card, Form, Input, List } from "antd";
-import { useEffect, useState } from "react";
-
-import * as api from "../api";
-import axios from "axios";
 import { Content } from "antd/es/layout/layout";
+
+import api from "axios";
+import { useEffect, useState } from "react";
 
 export default function TodoForm() {
   const [todos, setTodos] = useState([]);
   const [todo, setTodo] = useState("");
 
   const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState("");
+
+  const url = "http://localhost:1337/api/new-todos";
 
   useEffect(() => {
     update();
   }, []);
 
-  const update = () => {
-    axios
-      .get(api.url)
-      .then(({ data }) => {
-        setTodos(data.data);
-      })
-      .catch((error) => setError(error));
+  // read or update
+  const update = async () => {
+    await api(url)
+      .then(({ data }) => setTodos(data.data))
+      .catch((error) => {
+        setError(error);
+      });
   };
 
+  // create todo
   const createTodo = async () => {
-    await axios
-      .post(api.url, { data: todo })
+    await api
+      .post(url, { data: todo })
       .then(() => {
         setTodo("");
         update();
@@ -37,87 +40,57 @@ export default function TodoForm() {
       });
   };
 
-  const updateTodo = async (todoId) => {
-    axios
-      .put(`${api.url}/${todoId}`, {
-        data: todo,
-      })
+  // update todo
+  const updateTodo = async (id) => {
+    api
+      .put(`${url}/${id}`, { data: todo })
       .then(() => {
         setLoading(false);
         update();
+      })
+      .catch((error) => {
+        setError(error);
       });
   };
 
-  const deleteTodo = async (todoId) => {
-    axios.delete(`${api.url}/${todoId}`).then(() => update());
+  // delete todo
+  const deleteTodo = async (id) => {
+    api
+      .delete(`${url}/${id}`, { data: todo })
+      .then(() => {
+        update();
+      })
+      .catch((error) => {
+        setError(error);
+      });
   };
 
   if (error) {
-    console.log("Belum beruntung bang!");
+    console.log("Laper bang");
   }
 
   return (
-    <div>
+    <>
       <Card className="card">
+        <div>
+          <h1 style={{ textAlign: "center", paddingBottom: 20 }}>
+            <i>Todo List App</i>
+          </h1>
+        </div>
+
         <Form onFinish={createTodo}>
           <Form.Item
-            label="Date"
-            name="date"
-            rules={[
-              {
-                required: true,
-                message: "",
-              },
-            ]}
+            label="Item"
+            name="item"
+            rules={[{ required: true, message: "Jangan lupa saur bang" }]}
           >
             <Input
-              className="space-1"
-              type="date"
-              value={todo.date}
-              onChange={(e) =>
-                setTodo({ ...todo, date: e.currentTarget.value })
-              }
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Title"
-            name="title"
-            rules={[
-              {
-                required: true,
-                message: "",
-              },
-            ]}
-          >
-            <Input
-              className="space-1"
-              placeholder="Masukan titlenya bang!"
-              value={todo.title}
-              onChange={(e) =>
-                setTodo({ ...todo, title: e.currentTarget.value })
-              }
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Description"
-            name="description"
-            rules={[
-              {
-                required: true,
-                message: "Isi dulu bang",
-              },
-            ]}
-          >
-            <Input.TextArea
-              className="space-2"
-              placeholder="Masukan descriptionnya bang!"
-              cols={100}
-              value={todo.description}
-              onChange={(e) =>
-                setTodo({ ...todo, description: e.currentTarget.value })
-              }
+              type="text"
+              placeholder="Masukkan item anda"
+              value={todo.item}
+              onChange={(e) => {
+                setTodo({ ...todo, item: e.currentTarget.value });
+              }}
             />
           </Form.Item>
 
@@ -127,20 +100,15 @@ export default function TodoForm() {
         </Form>
       </Card>
 
-      <Card className="card">
-        {todos.length === 0 && (
-          <div>
-            <span className="span-1">Loading sebentar ya bang ....</span>
-            <pre className="span-2">{JSON.stringify(todo, null, "\t")}</pre>
-          </div>
-        )}
-        {!loading ? (
-          <List
-            dataSource={todos}
-            renderItem={({ id, attributes }) => (
+      <List
+        dataSource={todos}
+        renderItem={({ id, attributes }) => (
+          <Card className="card">
+            {!loading ? (
               <List.Item
                 actions={[
                   <Button
+                    className="btn"
                     onClick={() => {
                       setLoading(!loading);
 
@@ -151,7 +119,7 @@ export default function TodoForm() {
                   </Button>,
 
                   <Button
-                    className="delete"
+                    className="btn"
                     onClick={deleteTodo.bind(this, id)}
                     danger
                   >
@@ -162,63 +130,26 @@ export default function TodoForm() {
                 <Content>
                   <ul>
                     <li>
-                      <span className="span-1">Date : </span>
-                      <span className="span-2">{attributes.date}</span>
+                      <span className="span-1">ID : </span>
+                      <span className="span-2">{id}</span>
                     </li>
                     <li>
-                      <span className="span-1">Title : </span>
-                      <span className="span-2">{attributes.title}</span>
-                    </li>
-                    <li>
-                      <span className="span-1">Description : </span>
-                      <span className="span-2">{attributes.description}</span>
+                      <span className="span-1">Item : </span>
+                      <span className="span-2">{attributes.item}</span>
                     </li>
                   </ul>
                 </Content>
               </List.Item>
-            )}
-          />
-        ) : (
-          <List
-            dataSource={todos}
-            renderItem={({ id, attributes }) => (
+            ) : (
               <List.Item>
                 <Content>
                   <Form onFinish={updateTodo.bind(this, id)}>
-                    <Form.Item label="date" name="date">
+                    <Form.Item label="Item" name="item" required>
                       <Input
-                        className="space-1"
-                        type="date"
-                        defaultValue={attributes.date}
-                        value={todo.date}
+                        defaultValue={attributes.item}
+                        value={todo.item}
                         onChange={(e) =>
-                          setTodo({ ...todo, date: e.currentTarget.value })
-                        }
-                      />
-                    </Form.Item>
-
-                    <Form.Item label="Title" name="title">
-                      <Input
-                        className="space-1"
-                        defaultValue={attributes.title}
-                        value={todo.title}
-                        onChange={(e) =>
-                          setTodo({ ...todo, title: e.currentTarget.value })
-                        }
-                      />
-                    </Form.Item>
-
-                    <Form.Item label="Description" name="description">
-                      <Input.TextArea
-                        className="space-2"
-                        defaultValue={attributes.description}
-                        cols={100}
-                        value={todo.description}
-                        onChange={(e) =>
-                          setTodo({
-                            ...todo,
-                            description: e.currentTarget.value,
-                          })
+                          setTodo({ ...todo, item: e.currentTarget.value })
                         }
                       />
                     </Form.Item>
@@ -230,9 +161,9 @@ export default function TodoForm() {
                 </Content>
               </List.Item>
             )}
-          />
+          </Card>
         )}
-      </Card>
-    </div>
+      />
+    </>
   );
 }
